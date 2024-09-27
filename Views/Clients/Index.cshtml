@@ -150,7 +150,7 @@
                 <td>@Html.DisplayFor(modelItem => item.SecondaryEmailID)</td>
                 <td class="action-buttons">
                     @* <a class="btn btn-success edit-button" href="javascript:void(0);"
-                        onclick="loadEditForm(@item.ClientID)">Edit</a> *@
+                onclick="loadEditForm(@item.ClientID)">Edit</a> *@
                     <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.ClientID">Edit</a>|
                     <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.ClientID">Delete</a>
                 </td>
@@ -246,7 +246,7 @@
 @section Scripts {
 
     @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-        integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOM8B5O1DGGpS7JIZJ4u7hFb6eQk6Zf5j5BqK5z" crossorigin="anonymous"> *@
+integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOM8B5O1DGGpS7JIZJ4u7hFb6eQk6Zf5j5BqK5z" crossorigin="anonymous"> *@
     <!-- Add these in the correct order -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -257,11 +257,31 @@
         {
             <text>
                         $('#infoModal').modal('show');
-                        
+
             </text>
         }
-                // Show success modal if there is a success message
-                var successMessage = '@TempData["SuccessMessage"]';
+                $('.table-row').dblclick(function () {
+                    var userId = $(this).data('id'); // Get the user ID from the data attribute
+
+                    // AJAX call to fetch details
+                    $.ajax({
+                        url: '@Url.Action("Details", "Clients")/' + userId,
+                        type: 'GET',
+                        success: function (data) {
+                            // Load the fetched data into the modal's body
+                            $('#detailsModal .modal-body').html(data);
+
+                            // Show the modal
+                            $('#detailsModal').modal('show');
+                        },
+                        error: function () {
+                            $('#detailsModal .modal-body').html('<p>Error loading details.</p>');
+                            $('#detailsModal').modal('show');
+                        }
+                    });
+                });
+            // Show success modal if there is a success message
+            var successMessage = '@TempData["SuccessMessage"]';
             if (successMessage) {
                 $("#successModal").modal("show");
             }
@@ -275,6 +295,6 @@
                 });
             });
         });
-        
+
     </script>
 }

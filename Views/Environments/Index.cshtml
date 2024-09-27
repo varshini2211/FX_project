@@ -132,7 +132,7 @@
                 <td>
                     @* <a class="btn btn-success edit-button" href="javascript:void(0);"
                         onclick="loadEditForm(@item.EnvironmentID)">Edit</a> *@
-                    <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.EnvironmentID">Edit</a> | |
+                    <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.EnvironmentID">Edit</a> |
                     <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.EnvironmentID">Delete</a>
                 </td>
             </tr>
@@ -256,6 +256,20 @@
                 loadEnvironmentDetails(id);
             });
         });
+        function loadEnvironmentDetails(id) {
+            $.ajax({
+                url: '@Url.Action("Details", "Environments")/' + id,
+                type: 'GET',
+                success: function (result) {
+                    $('#environmentDetailsBody').html(result);
+                    $('#environmentDetailsModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while loading the details: " + error);
+                    console.error("Error details:", xhr, status, error);
+                }
+            });
+        }
         @* function loadForm(url, container, disableButtonClass, enableButtonClass) {
             // Disable the specified buttons before making the AJAX call
             $(disableButtonClass).prop('disabled', true).addClass('disabled');
@@ -278,27 +292,12 @@
                     $(enableButtonClass).prop('disabled', false);
                 }
             });
-        }
-        function loadEditForm(id) {
+        } *@
+        @* function loadEditForm(id) {
             loadForm('@Url.Action("Edit", "Environments")/' + id, '#editFormContainer', '.create-button', '.edit-button');
         }
         function loadCreateForm() {
             loadForm('@Url.Action("Create", "Environments")', '#createFormContainer', '.edit-button', '.create-button');
-        }
-        function loadEnvironmentDetails(id) {
-            $.ajax({
-                url: '@Url.Action("Details", "Environments")/' + id,
-                type: 'GET',
-                success: function (result) {
-                    $('#environmentDetailsBody').html(result);
-                    $('#environmentDetailsModal').modal('show');
-                },
-                error: function (xhr, status, error) {
-                    alert("An error occurred while loading the details: " + error);
-                    console.error("Error details:", xhr, status, error);
-                }
-            });
-         *@
-         }
+        } *@
     </script>
 }

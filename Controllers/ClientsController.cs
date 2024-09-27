@@ -41,12 +41,7 @@ namespace DolphinFx.Controllers
             {
                 return NotFound();
             }
-            if (IsAjaxRequest(Request))
-            {
-                return PartialView("Details", client);
-            }
-
-            return PartialView(client);
+            return PartialView("Details", client);
         }
 
         // GET: Clients/Create

@@ -262,6 +262,20 @@
                 });
             });
         });
+        function loadTeamDetails(id) {
+            $.ajax({
+                url: '@Url.Action("Details", "Teams")/' + id,
+                type: 'GET',
+                success: function (result) {
+                    $('#teamDetailsBody').html(result);
+                    $('#teamDetailsModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while loading the details: " + error);
+                    console.error("Error details:", xhr, status, error);
+                }
+            });
+        }
         @* function loadForm(url, container, disableButtonClass, enableButtonClass) {
             // Disable the specified buttons before making the AJAX call
             $(disableButtonClass).prop('disabled', true).addClass('disabled');
@@ -290,20 +304,6 @@
         }
         function loadCreateForm() {
             loadForm('@Url.Action("Create", "Teams")', '#createFormContainer', '.edit-button', '.create-button');
-        }
-        function loadTeamDetails(id) {
-            $.ajax({
-                url: '@Url.Action("Details", "Teams")/' + id,
-                type: 'GET',
-                success: function (result) {
-                    $('#teamDetailsBody').html(result);
-                    $('#teamDetailsModal').modal('show');
-                },
-                error: function (xhr, status, error) {
-                    alert("An error occurred while loading the details: " + error);
-                    console.error("Error details:", xhr, status, error);
-                }
-            }); *@
-        }
+        } *@
     </script>
 }
