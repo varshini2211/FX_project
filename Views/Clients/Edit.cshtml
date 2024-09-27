@@ -1,0 +1,169 @@
+﻿@model DolphinFx.Models.Client
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<style>
+    .form-group input {
+        display: block;
+        width: 100%;
+        padding: .375rem .75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: .25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+
+    /* Flex container for buttons */
+    .button-row {
+        display: flex;
+        gap: 10px;
+        margin: 7px;
+    }
+</style>
+
+<h1>Edit</h1>
+
+<h4>Client</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ClientID" />
+            <div class="flex-box">
+                <div class="form-group">
+                    <label asp-for="ClientName" class="control-label">Client Name</label>
+                    <input asp-for="ClientName" maxlength="20" minlength="3" />
+                    <span asp-validation-for="ClientName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PrimaryContact" class="control-label">Primary Contact</label>
+                    <input id="mobile_code" asp-for="PrimaryContact" data-validate
+                        style="appearance: none; -moz-appearance: textfield;" />
+                    <span asp-validation-for="PrimaryContact" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="flex-box">
+                <div class="form-group">
+                    <label asp-for="PrimaryEmailID" class="control-label">Primary EmailID</label>
+                    <input asp-for="PrimaryEmailID" />
+                    <span asp-validation-for="PrimaryEmailID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SecondaryContact" class="control-label">Secondary Contact</label>
+                    <input asp-for="SecondaryContact" data-validate
+                        style="appearance: none; -moz-appearance: textfield;" />
+                    <span asp-validation-for="SecondaryContact" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="flex-box">
+                <div class="form-group">
+                    <label asp-for="SecondaryEmailID" class="control-label"></label>
+                    <input asp-for="SecondaryEmailID" />
+                    <span asp-validation-for="SecondaryEmailID" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Button row -->
+            <div class="button-row">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a class="btn btn-danger" asp-action="Index">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <style>
+        /* Hide the default spinner buttons */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</div>
+
+@section Scripts {
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const clientNameInput = document.querySelector('input[name="ClientName"]');
+
+
+            clientNameInput.addEventListener('input', function () {
+                // Regex to ensure the client name starts with a letter and can contain letters, numbers, and spaces, but no special characters
+                const regex = /^[a-zA-Z][a-zA-Z0-9\s]*$/;
+                const errorMessage = document.querySelector('span[data-valmsg-for="ClientName"]');
+
+                // Replace any character that is not a letter, number, or space
+                this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+
+                // Check if the first character is a letter
+                if (!/^[a-zA-Z]/.test(this.value)) {
+                    errorMessage.textContent = "Client Name must start with a letter.";
+                } else {
+                    errorMessage.textContent = "";
+                }
+            });
+
+            document.querySelectorAll('input[data-validate]').forEach(input => {
+                input.addEventListener('input', function () {
+                    // Allow only digits and restrict to 10 characters
+                    this.value = this.value.replace(/\D/g, '').slice(0, 10);
+                });
+            });
+        });
+         const input = document.querySelector('#mobile_code');
+            const phoneInput = document.querySelector('input[name="PrimaryContact"]');
+            const errorMessage = document.createElement('span');
+            errorMessage.classList.add('text-danger');
+            errorMessage.style.display = 'none'; // Hide the error message initially
+            phoneInput.parentNode.appendChild(errorMessage); // Append the error message to the form
+ 
+            const iti = window.intlTelInput(input, {
+                initialCountry: "in", // No initial country
+                separateDialCode: true
+            });
+ 
+            // Update PrimaryContact value on form submit
+            const formm = document.querySelector('form');
+            formm.addEventListener('submit', function (e) {
+                @* console.log(phoneNumber.length);
+                console.log(countryCode); // Check if country code is retrieved correctly *@
+ 
+                const countryCode = iti.getSelectedCountryData().dialCode;
+                const phoneNumber = phoneInput.value.trim(); // Remove any extra spaces
+                //alert(`${countryCode}`)
+                //alert(`eifjrioghguh`)
+                // Check if country code is selected and phone number is entered
+                if (!countryCode) {
+                    e.preventDefault(); // Prevent form submission
+                    errorMessage.textContent = "Please select a country code.";
+                    errorMessage.style.display = 'block'; // Show the error message
+                    return;
+                } else if (phoneNumber.length !== 10) { // Validate for exactly 10 digits
+                    e.preventDefault(); // Prevent form submission
+                    errorMessage.textContent = "Please enter a valid 10-digit phone number.";
+                    errorMessage.style.display = 'block'; // Show the error message
+                    return;
+                } else {
+                    errorMessage.style.display = 'none'; // Hide the error message
+                    // Combine the country code and phone number
+                    phoneInput.value = `+${countryCode}-${phoneNumber}`;    
+                }
+            });
+        });
+
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

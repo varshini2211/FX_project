@@ -1,0 +1,107 @@
+﻿@model DolphinFx.Models.Application
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<style>
+    .flex-box {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .form-group {
+        flex: 1 1 45%;
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .form-group input {
+        display: block;
+        width: 100%;
+        padding: .375rem .75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: .25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+</style>
+
+<h4>Edit Application</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ApplicationID" />
+            <div class="flex-box">
+                <div class="form-group">
+                    <label asp-for="ApplicationName" class="control-label">Application Name</label>
+                    <input asp-for="ApplicationName" />
+                    <span asp-validation-for="ApplicationName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ApplicationShortName" class="control-label">Application ShortName</label>
+                    <input asp-for="ApplicationShortName" />
+                    <span asp-validation-for="ApplicationShortName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApplicationDescription" class="control-label">Application Description</label>
+                <input asp-for="ApplicationDescription" />
+                <span asp-validation-for="ApplicationDescription" class="text-danger"></span>
+            </div>
+            <div class=" can-align " style="margin: 7px;">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a class="btn btn-danger" asp-action="Index">cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Define the validation function
+            function addValidation(inputName, fieldName) {
+                const inputField = document.querySelector(`input[name="${inputName}"]`);
+                const errorMessage = document.querySelector(`span[data-valmsg-for="${inputName}"]`);
+
+                inputField.addEventListener('input', function () {
+                    const regex = /^[a-zA-Z][a-zA-Z0-9\s]*$/;
+
+                    // Replace invalid characters
+                    if (!regex.test(this.value)) {
+                        this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+                    }
+
+                    // Ensure the first character is a letter
+                    if (!/^[a-zA-Z]/.test(this.value)) {
+                        errorMessage.textContent = `${fieldName} must start with a letter.`;
+                    } else {
+                        errorMessage.textContent = "";
+                    }
+                });
+            }
+
+            // Apply validation to the desired fields
+            addValidation("ApplicationName", "Application Name");
+            addValidation("ApplicationShortName", "Application Short Name");
+            addValidation("ApplicationDescription", "Application Description");
+        });
+    </script>
+}

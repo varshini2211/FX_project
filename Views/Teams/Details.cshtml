@@ -1,0 +1,12 @@
+﻿@model DolphinFx.Models.Team
+
+<dl class="row">
+    <dt class="col-sm-6">Team Name</dt>
+    <dd class="col-sm-6">@Html.DisplayFor(model => model.TeamName)</dd>
+
+    <dt class="col-sm-6">Team Description</dt>
+    <dd class="col-sm-6">@Html.DisplayFor(model => model.TeamDescription)</dd>
+
+    <dt class="col-sm-6">Client Name</dt>
+    <dd class="col-sm-6">@Html.DisplayFor(model => model.Client.ClientName)</dd>
+</dl>

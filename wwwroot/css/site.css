@@ -1,0 +1,317 @@
+/* Sticky Footer */
+.footer-bottom {
+
+  padding: 10px;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  margin-top: auto;
+}
+
+.path-text {
+   
+    overflow-wrap: break-word;
+}
+
+
+
+.footer-bottom p {
+  margin-left: 187px;
+  color: #333;
+  font-weight: bold;
+}
+
+.flex-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  /* Adjust the gap between elements */
+  margin-right: 25px;
+}
+
+.form-group {
+  flex: 1 1 45%;
+  /* Adjusts the flex basis to ensure two items per row */
+  margin-bottom: 16px;
+  /* Adds space below each form group */
+}
+
+.form-group label {
+  display: block;
+  /* Ensures the label takes up its own line */
+  margin-bottom: 4px;
+  /* Adds space between label and input */
+}
+
+.can-align {
+  display: flex;
+  justify-content: flex-start;
+  /* Aligns items to the left */
+  gap: 5px;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+input:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.pad {
+  padding: 4px 22px;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* Styles for tables page */
+.table {
+  width: auto;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 16px;
+  text-align: left;
+}
+
+.table {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.button-container {
+  text-align: right;
+  /* Align buttons to the right */
+  margin-right: auto;
+  /* Optional margin to add space from the right */
+}
+
+.button-container {
+  margin: 0;
+  /* Remove default margin */
+}
+
+.table thead {
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.table th,
+.table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  font-weight: bold;
+
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table a {
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.table .actions a {
+  margin: 0 5px;
+}
+
+.table .actions a:first-child {
+  margin-left: 0;
+}
+
+.table .actions a:last-child {
+  margin-right: 0;
+}
+
+/* Styles for details page */
+.details-container {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.details-container h4 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.details-list {
+  margin: 0;
+  padding: 0;
+}
+
+.details-list dt {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.details-list dd {
+  margin-bottom: 15px;
+  padding-left: 0;
+}
+
+.details-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.details-value {
+  color: #555;
+}
+
+.details-actions {
+  margin-top: 20px;
+}
+
+.details-actions a {
+  text-decoration: none;
+  /* color: #007bff; */
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.details-actions a.btn-primary {
+  /* background-color: #007bff; */
+  color: #fff;
+}
+
+.details-actions a.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.search-container {
+  margin-bottom: 20px;
+  text-align: left;
+  /* Align search input to the left */
+  margin-right: 10px;
+  width: 193px;
+  height: 40px
+}
+
+.search-button-container {
+  display: flex;
+  justify-content: space-between;
+  /* Space out the items */
+  align-items: center;
+  /* Center vertically */
+  margin-bottom: 20px;
+  /* Space below */
+}
+
+.modal-dialog {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  text-align: center;
+  height: 90%;
+  /* Ensures full height for vertical centering */
+}
+
+/* Hide the default spinner buttons */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+/*this the css for details modal*/
+
+.modal-content {
+  background-color: #ffffff;
+  /* White background */
+  border-radius: 8px;
+  /* Rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  /* Soft shadow */
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #a2c2e6, #e4c1f9);
+  /* Bootstrap primary color */
+  color: white;
+  /* White text color */
+  padding: 1rem;
+  /* More padding */
+  border-bottom: 2px solid #0056b3;
+  /* Darker border at the bottom */
+}
+
+.modal-body {
+  padding: 1.5rem;
+  /* Add some padding */
+  font-size: 1rem;
+  /* Increase font size */
+  line-height: 1.5;
+  /* Improve readability */
+}
+
+.modal-footer .btn {
+  padding: 0.5rem 1.5rem;
+  /* More padding for buttons */
+  border-radius: 4px;
+  /* Slightly rounded buttons */
+}
+
+.modal-footer .btn-secondary {
+  background-color: #6c757d;
+  /* Bootstrap secondary color */
+  color: white;
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: #5a6268;
+  /* Darker shade on hover */
+}
+
+.modal {
+  transition: all 0.3s ease-in-out;
+  /* Smooth transition */
+}
+
+.modal.show {
+  transform: scale(1.05);
+  /* Slight scale up effect on show */
+}
+
+.modal-dialog {
+  max-width: 500px;
+  /* Limit max width */
+  width: 90%;
+  /* Full width on small screens */
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  /* Larger title font size */
+  font-weight: bold;
+  /* Bold title */
+}
+
+.modal-body dl {
+  margin: 0;
+  /* Remove margin */
+}
+
+h1,
+h4,
+label {
+  text-align: left;
+}
