@@ -21,13 +21,48 @@ namespace DolphinFx.Controllers
         }
 
         // GET: Environments
-        public async Task<IActionResult> Index(int? page)
-        {
-            int pageSize = 5; // Number of records per page
-            int pageNumber = page ?? 1; // Default to page 1 if no page is specified
-            var result = await _context.Environments.ToListAsync();
-            return View(result.ToPagedList(pageNumber, pageSize));
-        }
+        // public async Task<IActionResult> Index(int? page)
+        // {
+        //     int pageSize = 5; // Number of records per page
+        //     int pageNumber = page ?? 1; // Default to page 1 if no page is specified
+        //     var result = await _context.Environments.ToListAsync();
+        //     return View(result.ToPagedList(pageNumber, pageSize));
+        // }
+private bool IsAjaxRequest(HttpRequest request)
+{
+    return request.Headers["X-Requested-With"] == "XMLHttpRequest";
+}
+
+        public async Task<IActionResult> Index(string searchTerm, int? page)
+{
+    // Create a queryable collection of environments
+    var environments = _context.Environments.AsQueryable();
+
+    // Check if the search term is provided
+    if (!string.IsNullOrEmpty(searchTerm))
+    {
+        environments = environments.Where(e => e.EnvironmentName.Contains(searchTerm) || // Adjust based on your model properties
+                                                e.EnvironmentDescription.Contains(searchTerm)); // Add other fields as necessary
+    }
+
+    // Define pagination
+    int pageSize = 5; // Number of records per page
+    int pageNumber = page ?? 1; // Default to page 1 if no page is specified
+
+    // Get all environments as a list (not recommended for large datasets, consider using pagination here too)
+    var result = await environments.ToListAsync(); // Fetch all records matching the search criteria
+    var pagedEnvironments = result.ToPagedList(pageNumber, pageSize); // Use ToPagedList for pagination
+
+    ViewBag.SearchTerm = searchTerm; // Pass the search term to the view
+
+    if (IsAjaxRequest(Request)) // Check if the request is an AJAX request
+    {
+        return PartialView("_EnvironmentTablePartial", pagedEnvironments); // Return a partial view for AJAX requests
+    }
+
+    return View(pagedEnvironments); // Return the full view for regular requests
+}
+
 
         // GET: Environments/Details/5
         public async Task<IActionResult> Details(int? id)

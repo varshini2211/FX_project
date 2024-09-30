@@ -19,12 +19,29 @@ namespace DolphinFx.Controllers
         }
 
         // GET: Clients
-        public async Task<IActionResult> Index(int? page)
+        public IActionResult Index(string searchTerm, int? page)
         {
-            int pageNumber = page ?? 1;
+            var clients = _context.Clients.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                clients = clients.Where(c => c.ClientName.Contains(searchTerm) ||
+                                              c.PrimaryEmailID.Contains(searchTerm) ||
+                                              c.SecondaryEmailID.Contains(searchTerm));
+            }
+
             int pageSize = 5;
-            var result = await _context.Clients.ToListAsync();
-            return View(result.ToPagedList(pageNumber, pageSize));
+            int pageNumber = page ?? 1;
+            var pagedClients = clients.ToPagedList(pageNumber, pageSize); // Use ToPagedList here
+
+            ViewBag.SearchTerm = searchTerm; // Pass the search term to the view
+
+            if (IsAjaxRequest(Request)) // Check if the request is an AJAX request
+            {
+                return PartialView("_ClientTablePartial", pagedClients); // Return a partial view
+            }
+
+            return View(pagedClients); // Return the full view for regular requests
         }
 
         // GET: Clients/Details/5

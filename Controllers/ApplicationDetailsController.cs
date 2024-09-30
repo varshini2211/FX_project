@@ -21,14 +21,65 @@ namespace DolphinFx.Controllers
         }
 
         // GET: ApplicationDetails
-        public async Task<IActionResult> Index(int? page)
-        {
-            int pageSize = 5; // Number of records per page
-            int pageNumber = page ?? 1; // Default to page 1 if no page is specified
-            var appDbContext = _context.ApplicationDetails.Include(a => a.Applications).Include(a => a.Client).Include(a => a.Environments).Include(a => a.UserRole);
-            var result = await appDbContext.ToListAsync();
-            return View(result.ToPagedList(pageNumber, pageSize));
-        }
+        // public async Task<IActionResult> Index(int? page)
+        // {
+        //     int pageSize = 5; // Number of records per page
+        //     int pageNumber = page ?? 1; // Default to page 1 if no page is specified
+        //     var appDbContext = _context.ApplicationDetails.Include(a => a.Applications).Include(a => a.Client).Include(a => a.Environments).Include(a => a.UserRole);
+        //     var result = await appDbContext.ToListAsync();
+        //     return View(result.ToPagedList(pageNumber, pageSize));
+        // }
+
+
+        public async Task<IActionResult> Index(string searchTerm, int? page)
+{
+    // Query for ApplicationDetails including related entities
+    var applicationDetails = _context.ApplicationDetails
+        .Include(a => a.Applications)
+        .Include(a => a.Client)
+        .Include(a => a.Environments)
+        .Include(a => a.UserRole)
+        .AsQueryable();
+
+    // Apply search filter if searchTerm is provided
+    if (!string.IsNullOrEmpty(searchTerm))
+    {
+        applicationDetails = applicationDetails.Where(a =>
+            a.Applications.ApplicationName.Contains(searchTerm) ||  // Adjust this based on your actual properties
+            a.Client.ClientName.Contains(searchTerm) ||
+            a.UserRole.RoleDescription.Contains(searchTerm) ||
+              a.Environments.EnvironmentName.Contains(searchTerm) ||
+                a.Applications.ApplicationName.Contains(searchTerm) ||
+                 a.Link.Contains(searchTerm) ||
+                  a.User.Contains(searchTerm) ||
+                  a.Password.Contains(searchTerm) 
+                  
+                
+                 
+            
+            );   // Adjust this based on your actual properties
+    }
+
+    // Pagination
+    // Pagination
+int pageSize = 5; // Number of records per page
+int pageNumber = page ?? 1; // Default to page 1 if no page is specified
+
+// Ensure to materialize the query first if using ToPagedList()
+var applicationDetailsList = await applicationDetails.ToListAsync(); 
+var pagedApplicationDetails = applicationDetailsList.ToPagedList(pageNumber, pageSize);
+
+    ViewBag.SearchTerm = searchTerm; // Pass the search term to the view
+
+    // Check if the request is an AJAX request
+    if (IsAjaxRequest(Request))
+    {
+        return PartialView("_ApplicationDetailsTablePartial", pagedApplicationDetails); // Return a partial view
+    }
+
+    return View(pagedApplicationDetails); // Return the full view for regular requests
+}
+
 
         // GET: ApplicationDetails/Details/5
         public async Task<IActionResult> Details(int? id)

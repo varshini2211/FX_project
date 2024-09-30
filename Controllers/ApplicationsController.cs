@@ -26,13 +26,43 @@ namespace DolphinFx.Controllers
         //     return View(await _context.Applications.ToListAsync());
         // }
         // this method is changed for pagination shown below
-        public async Task<IActionResult> Index(int? page)
-        {
-            int pageSize = 5; // Number of records per page
-            int pageNumber = page ?? 1; // Default to page 1 if no page is specified
-            var applications = await _context.Applications.ToListAsync();
-            return View(applications.ToPagedList(pageNumber, pageSize));
-        }
+        // public async Task<IActionResult> Index(int? page)
+        // {
+        //     int pageSize = 5; // Number of records per page
+        //     int pageNumber = page ?? 1; // Default to page 1 if no page is specified
+        //     var applications = await _context.Applications.ToListAsync();
+        //     return View(applications.ToPagedList(pageNumber, pageSize));
+        // }
+        public async Task<IActionResult> Index(string searchTerm, int? page)
+{
+    // Create a queryable collection of applications
+    var applications = _context.Applications.AsQueryable();
+
+    // Check if the search term is provided
+    if (!string.IsNullOrEmpty(searchTerm))
+    {
+        applications = applications.Where(a => a.ApplicationName.Contains(searchTerm) ||
+                                               a.ApplicationDescription.Contains(searchTerm) ||
+                                               a.ApplicationName.Contains(searchTerm)); // Adjust according to your application fields
+    }
+
+    // Define pagination
+    int pageSize = 5; // Number of records per page
+    int pageNumber = page ?? 1; // Default to page 1 if no page is specified
+    
+    // Get the paged applications using ToPagedList
+    var pagedApplications = applications.ToPagedList(pageNumber, pageSize); // Use ToPagedList for paginated results
+
+    ViewBag.SearchTerm = searchTerm; // Pass the search term to the view
+
+    if (IsAjaxRequest(Request)) // Check if the request is an AJAX request
+    {
+        return PartialView("_ApplicationTablePartial", pagedApplications); // Return a partial view for AJAX requests
+    }
+
+    return View(pagedApplications); // Return the full view for regular requests
+}
+
 
 
 

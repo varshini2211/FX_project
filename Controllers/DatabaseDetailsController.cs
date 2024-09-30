@@ -21,14 +21,58 @@ namespace DolphinFx.Controllers
         }
 
         // GET: DatabaseDetails
-        public async Task<IActionResult> Index(int? page)
-        {
-            int pageSize = 5; // Number of records per page
-            int pageNumber = page ?? 1; // Default to page 1 if no page is specified
-            var appDbContext = _context.DatabaseDetails.Include(d => d.Application).Include(d => d.Client).Include(d => d.Environments);
-            var result = await appDbContext.ToListAsync();
-            return View(result.ToPagedList(pageNumber, pageSize));
-        }
+        // public async Task<IActionResult> Index(int? page)
+        // {
+        //     int pageSize = 5; // Number of records per page
+        //     int pageNumber = page ?? 1; // Default to page 1 if no page is specified
+        //     var appDbContext = _context.DatabaseDetails.Include(d => d.Application).Include(d => d.Client).Include(d => d.Environments);
+        //     var result = await appDbContext.ToListAsync();
+        //     return View(result.ToPagedList(pageNumber, pageSize));
+        // }
+
+        public async Task<IActionResult> Index(string searchTerm, int? page)
+{
+    // Start with a queryable collection of DatabaseDetails
+    var databaseDetails = _context.DatabaseDetails
+        .Include(d => d.Application)
+        .Include(d => d.Client)
+        .Include(d => d.Environments)
+        .AsQueryable();
+
+    // Apply search filter if a search term is provided
+    if (!string.IsNullOrEmpty(searchTerm))
+    {
+        databaseDetails = databaseDetails.Where(d => d.Datasource.Contains(searchTerm) || // Replace SomeProperty with actual properties
+                                                     d.Username.Contains(searchTerm) ||
+                                                     d.Password.Contains(searchTerm) ||
+                                                     d.Client.ClientName.Contains(searchTerm) ||
+                                                     d.Application.ApplicationName.Contains(searchTerm) ||
+                                                     d.Environments.EnvironmentName.Contains(searchTerm)
+                        
+                                                    
+
+                                                     ); // Add more properties as needed
+    }
+
+    // Pagination setup
+    int pageSize = 5; // Number of records per page
+    int pageNumber = page ?? 1; // Default to page 1 if no page is specified
+
+    // Execute the query and get paginated results
+    var result = await databaseDetails.ToListAsync();
+    var pagedDatabaseDetails = result.ToPagedList(pageNumber, pageSize);
+
+    ViewBag.SearchTerm = searchTerm; // Pass the search term to the view
+
+    // Check if the request is an AJAX request
+    if (IsAjaxRequest(Request)) // Ensure you have IsAjaxRequest method defined
+    {
+        return PartialView("_DatabaseDetailsTablePartial", pagedDatabaseDetails); // Return a partial view for AJAX requests
+    }
+
+    return View(pagedDatabaseDetails); // Return the full view for regular requests
+}
+
 
         // GET: DatabaseDetails/Details/5
         public async Task<IActionResult> Details(int? id)

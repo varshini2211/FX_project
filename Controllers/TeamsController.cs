@@ -21,16 +21,63 @@ namespace DolphinFx.Controllers
         }
 
         // GET: Teams
-        public async Task<IActionResult> Index(int? page)
+        //public async Task<IActionResult> Index(int? page)
+        //{
+        //    int pageSize = 5; // Number of records per page
+        //    int pageNumber = page ?? 1; // Default to page 1 if no page is specified
+        //    var appDbContext = _context.Teams.Include(t => t.Client);
+        //    var result = await appDbContext.ToListAsync();
+        //    return View(result.ToPagedList(pageNumber, pageSize));
+        //}
+       public async Task<IActionResult> Index(string searchTerm, int? page)
+{
+   
+
+    // Get the teams including the related Client entity
+    var teams = _context.Teams.Include(t => t.Client).AsQueryable();
+
+    // Search logic: filter based on search term
+    if (!string.IsNullOrEmpty(searchTerm))
+    {
+        teams = teams.Where(t => t.TeamName.Contains(searchTerm) ||
+                                 t.TeamDescription.Contains(searchTerm) ||
+                                 t.Client.ClientName.Contains(searchTerm));
+    }
+
+    int pageSize = 5;
+            int pageNumber = page ?? 1;
+            var pagedTeams = teams.ToPagedList(pageNumber, pageSize); // Use ToPagedList here
+
+
+    // Pass the search term to the view for retaining search value in the UI
+    ViewBag.SearchTerm = searchTerm;
+
+    // Check if the request is an AJAX request for partial view rendering
+    if (IsAjaxRequest(Request))
+    {
+        return PartialView("_TeamTablePartial", pagedTeams);
+    }
+
+    // Return the full view with paginated data
+    return View(pagedTeams);
+}
+
+// Helper method to check for AJAX requests
+private bool IsAjaxRequest(HttpRequest request)
+{
+    return request.Headers["X-Requested-With"] == "XMLHttpRequest";
+}
+
+
+        // GET: Teams/Create
+        public IActionResult Create()
         {
-            int pageSize = 5; // Number of records per page
-            int pageNumber = page ?? 1; // Default to page 1 if no page is specified
-            var appDbContext = _context.Teams.Include(t => t.Client);
-            var result = await appDbContext.ToListAsync();
-            return View(result.ToPagedList(pageNumber, pageSize));
+            ViewData["ClientID"] = new SelectList(_context.Clients, "ClientID", "ClientName");
+            return View();
         }
 
-        // GET: Teams/Details/5
+
+         // GET: Teams/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,13 +94,6 @@ namespace DolphinFx.Controllers
             }
 
             return PartialView(team);
-        }
-
-        // GET: Teams/Create
-        public IActionResult Create()
-        {
-            ViewData["ClientID"] = new SelectList(_context.Clients, "ClientID", "ClientName");
-            return View();
         }
 
         // POST: Teams/Create
