@@ -20,7 +20,7 @@ namespace DolphinFx.Models
 
 
         [Required(ErrorMessage = "Primary Contact is required.")]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "Primary Contact must be a 10-digit number.")]
+        
         [Column("PRIMARY_CONTACT")]
         public string? PrimaryContact { get; set; } // 10 digits
 
@@ -30,7 +30,7 @@ namespace DolphinFx.Models
         [Column("PRIMARY_EMAILID")]
         public string PrimaryEmailID { get; set; } = string.Empty; // Required and valid email
 
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "Primary Contact must be a 10-digit number.")]
+        // [RegularExpression(@"^\d{10}$", ErrorMessage = "Primary Contact must be a 10-digit number.")]
         [Column("SECONDARY_CONTACT")]
         public string? SecondaryContact { get; set; } // 10 digits
 

@@ -47,8 +47,12 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="PrimaryContact" class="control-label">Primary Contact</label>
-                    <input id="mobile_code" asp-for="PrimaryContact" data-validate
-                        style="appearance: none; -moz-appearance: textfield;" />
+                    <div class="input-group">
+                        @* <input type="tel" class="form-control" placeholder="Code" /> *@
+                        <input id="mobile_code" asp-for="PrimaryContact" class="form-control"
+                            placeholder="Enter Phone Number" data-validate
+                            style="appearance: none; -moz-appearance: textfield;" />
+                    </div>
                     <span asp-validation-for="PrimaryContact" class="text-danger"></span>
                 </div>
             </div>
@@ -60,8 +64,11 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="SecondaryContact" class="control-label">Secondary Contact</label>
-                    <input asp-for="SecondaryContact" data-validate
-                        style="appearance: none; -moz-appearance: textfield;" />
+                    <div class="input-group">
+                        <input id="secondary_mobile_code" asp-for="SecondaryContact" class="form-control"
+                            placeholder="Enter Phone Number" data-secondary-validate
+                            style="appearance: none; -moz-appearance: textfield;" />
+                    </div>
                     <span asp-validation-for="SecondaryContact" class="text-danger"></span>
                 </div>
             </div>
@@ -87,11 +94,19 @@
             -webkit-appearance: none;
             margin: 0;
         }
+
+        #mobile_code {
+            width: 550px;
+        }
+
+        #secondary_mobile_code {
+            width: 550px;
+        }
     </style>
 </div>
 
 @section Scripts {
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
@@ -116,53 +131,95 @@
                 }
             });
 
+            // Phone Number validation for contact inputs
             document.querySelectorAll('input[data-validate]').forEach(input => {
                 input.addEventListener('input', function () {
-                    // Allow only digits and restrict to 10 characters
-                    this.value = this.value.replace(/\D/g, '').slice(0, 10);
+                    this.value = this.value.replace(/\D/g, '').slice(0, 10); // Limit to 10 digits
                 });
             });
-        });
-         const input = document.querySelector('#mobile_code');
+            document.querySelectorAll('input[data-secondary-validate]').forEach(input => {
+                input.addEventListener('input', function () {
+                    this.value = this.value.replace(/\D/g, '').slice(0, 10); // Limit to 10 digits
+                });
+            });
+
+            // Initialize intlTelInput for country code selection
+            const input = document.querySelector('#mobile_code');
             const phoneInput = document.querySelector('input[name="PrimaryContact"]');
             const errorMessage = document.createElement('span');
             errorMessage.classList.add('text-danger');
             errorMessage.style.display = 'none'; // Hide the error message initially
             phoneInput.parentNode.appendChild(errorMessage); // Append the error message to the form
- 
+
             const iti = window.intlTelInput(input, {
                 initialCountry: "in", // No initial country
                 separateDialCode: true
             });
- 
+
+            // Secondary Contact Logic
+            const secondaryInput = document.querySelector('#secondary_mobile_code');
+            const secondaryPhoneInput = document.querySelector('input[name="SecondaryContact"]');
+            const secondaryErrorMessage = document.createElement('span');
+            secondaryErrorMessage.classList.add('text-danger');
+            secondaryErrorMessage.style.display = 'none';
+            secondaryPhoneInput.parentNode.appendChild(secondaryErrorMessage);
+
+            const secondaryIti = window.intlTelInput(secondaryInput, {
+                initialCountry: "in",
+                separateDialCode: true
+            });
+
             // Update PrimaryContact value on form submit
             const formm = document.querySelector('form');
             formm.addEventListener('submit', function (e) {
-                @* console.log(phoneNumber.length);
-                console.log(countryCode); // Check if country code is retrieved correctly *@
- 
+
+
                 const countryCode = iti.getSelectedCountryData().dialCode;
                 const phoneNumber = phoneInput.value.trim(); // Remove any extra spaces
-                //alert(`${countryCode}`)
-                //alert(`eifjrioghguh`)
+                const secondaryCountryCode = secondaryIti.getSelectedCountryData().dialCode;
+                const secondaryPhoneNumber = secondaryPhoneInput.value.trim();
                 // Check if country code is selected and phone number is entered
                 if (!countryCode) {
                     e.preventDefault(); // Prevent form submission
                     errorMessage.textContent = "Please select a country code.";
+                    //flag1 = true;
                     errorMessage.style.display = 'block'; // Show the error message
                     return;
                 } else if (phoneNumber.length !== 10) { // Validate for exactly 10 digits
                     e.preventDefault(); // Prevent form submission
                     errorMessage.textContent = "Please enter a valid 10-digit phone number.";
                     errorMessage.style.display = 'block'; // Show the error message
+                    //flag1 = true;
                     return;
-                } else {
-                    errorMessage.style.display = 'none'; // Hide the error message
-                    // Combine the country code and phone number
-                    phoneInput.value = `+${countryCode}-${phoneNumber}`;    
                 }
+                // Secondary Contact Validation
+                if (!secondaryCountryCode) {
+                    e.preventDefault();
+                    secondaryErrorMessage.textContent = "Please select a country code for Secondary Contact.";
+                    secondaryErrorMessage.style.display = 'block';
+                    return;
+                } else if (secondaryPhoneNumber.length !== 10) {
+                    e.preventDefault();
+                    secondaryErrorMessage.textContent = "Please enter a valid 10-digit phone number for Secondary Contact.";
+                    secondaryErrorMessage.style.display = 'block';
+                    return;
+                }
+
+                else {
+                    if (phoneNumber.length == 10 && secondaryPhoneNumber.length == 10) {
+                        errorMessage.style.display = 'none'; // Hide the error message
+                        // Combine the country code and phone number
+                        phoneInput.value = `+${countryCode}-${phoneNumber}`;
+                        secondaryErrorMessage.style.display = 'none';
+                        secondaryPhoneInput.value = `+${secondaryCountryCode}-${secondaryPhoneNumber}`;
+                    }
+
+                }
+
+
             });
         });
+
 
     </script>
     <partial name="_ValidationScriptsPartial" />

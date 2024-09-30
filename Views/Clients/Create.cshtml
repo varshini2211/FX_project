@@ -1,9 +1,9 @@
 ﻿@model DolphinFx.Models.Client
- 
+
 @{
     ViewData["Title"] = "Create";
 }
- 
+
 <style>
     .flex-box {
         display: flex;
@@ -12,17 +12,17 @@
         gap: 16px;
         max-width: 100%;
     }
- 
+
     .form-group {
         flex: 1 1 45%;
         margin-bottom: 16px;
     }
- 
+
     .form-group label {
         display: block;
         margin-bottom: 4px;
     }
- 
+
     .form-group input {
         display: block;
         width: 100%;
@@ -36,38 +36,50 @@
         border-radius: .25rem;
         transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     }
- 
+
     body {
         margin: 0;
         padding: 0;
         overflow-x: hidden;
     }
- 
+
     /* Hide the default spinner buttons for number inputs */
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
         -webkit-appearance: none;
         margin: 0;
     }
- 
+
     /* Custom styles for the input group */
     .input-group {
         display: flex;
-        align-items: center; /* Center the items vertically */
+        align-items: center;
+        /* Center the items vertically */
     }
- 
+
     .input-group input[type="tel"] {
-        flex: 0 0 20%; /* Set width for country code input */
-        margin-right: -1px; /* Overlap the borders to eliminate gap */
-        border-radius: .25rem 0 0 .25rem; /* Rounded corners on the left */
+        flex: 0 0 20%;
+        /* Set width for country code input */
+        margin-right: -1px;
+        /* Overlap the borders to eliminate gap */
+        border-radius: .25rem 0 0 .25rem;
+        /* Rounded corners on the left */
     }
- 
+
     .input-group input[name="PrimaryContact"] {
-        flex: 1; /* Allow the phone number input to take the remaining space */
-        border-radius: 0 .25rem .25rem 0; /* Rounded corners on the right */
+        flex: 1;
+        /* Allow the phone number input to take the remaining space */
+        border-radius: 0 .25rem .25rem 0;
+        /* Rounded corners on the right */
+    }
+    #mobile_code{
+        width: 550px;
+    }
+    #secondary_mobile_code{
+        width: 550px;
     }
 </style>
- 
+
 <div class="pad">
     <h1>Create</h1>
     <p id="sh"></p>
@@ -77,38 +89,44 @@
         <div class="col-md-12">
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
- 
+
                 <div class="flex-box">
                     <div class="form-group">
                         <label asp-for="ClientName" class="control-label">Client Name</label>
                         <input asp-for="ClientName" class="form-control" />
                         <span asp-validation-for="ClientName" class="text-danger"></span>
                     </div>
- 
+
                     <div class="form-group">
                         <label asp-for="PrimaryContact" class="control-label">Primary Contact</label>
-                        <div class="input-group">
-                            @* <input  type="tel"  class="form-control" placeholder="Code" /> *@
-                            <input id="mobile_code" asp-for="PrimaryContact" class="form-control" placeholder="Enter Phone Number" data-validate style="appearance: none; -moz-appearance: textfield;" />
+                        <div class="input-group ">
+                            @* <input type="tel" class="form-control" placeholder="Code" /> *@
+                            <input id="mobile_code" asp-for="PrimaryContact" class="form-control cont-form"
+                                placeholder="Enter Phone Number" data-validate
+                                style="appearance: none; -moz-appearance: textfield;" />
                         </div>
                         <span asp-validation-for="PrimaryContact" class="text-danger"></span>
                     </div>
                 </div>
- 
+
                 <div class="flex-box">
                     <div class="form-group">
                         <label asp-for="PrimaryEmailID" class="control-label">Primary EmailID</label>
                         <input asp-for="PrimaryEmailID" class="form-control" />
                         <span asp-validation-for="PrimaryEmailID" class="text-danger"></span>
                     </div>
- 
+
                     <div class="form-group">
                         <label asp-for="SecondaryContact" class="control-label">Secondary Contact</label>
-                        <input asp-for="SecondaryContact" class="form-control" data-validate style="appearance: none; -moz-appearance: textfield;" />
+                        <div class="input-group">
+                            <input id="secondary_mobile_code" asp-for="SecondaryContact" class="form-control "
+                                placeholder="Enter Phone Number" data-secondary-validate
+                                style="appearance: none; -moz-appearance: textfield;" />
+                        </div>
                         <span asp-validation-for="SecondaryContact" class="text-danger"></span>
                     </div>
                 </div>
- 
+
                 <div class="flex-box">
                     <div class="form-group">
                         <label asp-for="SecondaryEmailID" class="control-label">Secondary EmailID</label>
@@ -116,28 +134,28 @@
                         <span asp-validation-for="SecondaryEmailID" class="text-danger"></span>
                     </div>
                 </div>
- 
+
                 <div>
-                    <input type="submit" id = "sub" value="Create" class="btn btn-primary" />
+                    <input type="submit" id="sub" value="Create" class="btn btn-primary" />
                     <a class="btn btn-primary" asp-action="Index">Back to List</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
- 
+
 @section Scripts {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
- 
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-           
+
             // Client Name validation
             const clientNameInput = document.querySelector('input[name="ClientName"]');
-           
+
             clientNameInput.addEventListener('input', function () {
                 const errorMessage = document.querySelector('span[data-valmsg-for="ClientName"]');
                 this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
@@ -146,16 +164,21 @@
                 } else {
                     errorMessage.textContent = "";
                 }
-               
+
             });
- 
+
             // Phone Number validation for contact inputs
             document.querySelectorAll('input[data-validate]').forEach(input => {
                 input.addEventListener('input', function () {
                     this.value = this.value.replace(/\D/g, '').slice(0, 10); // Limit to 10 digits
                 });
             });
- 
+            document.querySelectorAll('input[data-secondary-validate]').forEach(input => {
+                input.addEventListener('input', function () {
+                    this.value = this.value.replace(/\D/g, '').slice(0, 10); // Limit to 10 digits
+                });
+            });
+
             // Initialize intlTelInput for country code selection
             const input = document.querySelector('#mobile_code');
             const phoneInput = document.querySelector('input[name="PrimaryContact"]');
@@ -163,42 +186,87 @@
             errorMessage.classList.add('text-danger');
             errorMessage.style.display = 'none'; // Hide the error message initially
             phoneInput.parentNode.appendChild(errorMessage); // Append the error message to the form
- 
+
             const iti = window.intlTelInput(input, {
                 initialCountry: "in", // No initial country
                 separateDialCode: true
             });
- 
+
+            // Secondary Contact Logic
+            const secondaryInput = document.querySelector('#secondary_mobile_code');
+            const secondaryPhoneInput = document.querySelector('input[name="SecondaryContact"]');
+            const secondaryErrorMessage = document.createElement('span');
+            secondaryErrorMessage.classList.add('text-danger');
+            secondaryErrorMessage.style.display = 'none';
+            secondaryPhoneInput.parentNode.appendChild(secondaryErrorMessage);
+
+            const secondaryIti = window.intlTelInput(secondaryInput, {
+                initialCountry: "in",
+                separateDialCode: true
+            });
+
             // Update PrimaryContact value on form submit
             const formm = document.querySelector('form');
             formm.addEventListener('submit', function (e) {
-                @* console.log(phoneNumber.length);
+        @* console.log(phoneNumber.length);
                 console.log(countryCode); // Check if country code is retrieved correctly *@
- 
+
                 const countryCode = iti.getSelectedCountryData().dialCode;
                 const phoneNumber = phoneInput.value.trim(); // Remove any extra spaces
+                const secondaryCountryCode = secondaryIti.getSelectedCountryData().dialCode;
+                const secondaryPhoneNumber = secondaryPhoneInput.value.trim();
+
                 //alert(`${countryCode}`)
                 //alert(`eifjrioghguh`)
                 // Check if country code is selected and phone number is entered
                 if (!countryCode) {
                     e.preventDefault(); // Prevent form submission
                     errorMessage.textContent = "Please select a country code.";
+                    //flag1 = true;
                     errorMessage.style.display = 'block'; // Show the error message
                     return;
                 } else if (phoneNumber.length !== 10) { // Validate for exactly 10 digits
                     e.preventDefault(); // Prevent form submission
                     errorMessage.textContent = "Please enter a valid 10-digit phone number.";
                     errorMessage.style.display = 'block'; // Show the error message
+                    //flag1 = true;
                     return;
-                } else {
-                    errorMessage.style.display = 'none'; // Hide the error message
-                    // Combine the country code and phone number
-                    phoneInput.value = `+${countryCode}-${phoneNumber}`;    
                 }
+                // Secondary Contact Validation
+                if (!secondaryCountryCode) {
+                    e.preventDefault();
+                    secondaryErrorMessage.textContent = "Please select a country code for Secondary Contact.";
+                    secondaryErrorMessage.style.display = 'block';
+                    return;
+                } else if (secondaryPhoneNumber.length !== 10) {
+                    e.preventDefault();
+                    secondaryErrorMessage.textContent = "Please enter a valid 10-digit phone number for Secondary Contact.";
+                    secondaryErrorMessage.style.display = 'block';
+                    return;
+                }
+
+                else {
+                    if (phoneNumber.length == 10 && secondaryPhoneNumber.length == 10) {
+                        errorMessage.style.display = 'none'; // Hide the error message
+                        // Combine the country code and phone number
+                        phoneInput.value = `+${countryCode}-${phoneNumber}`;
+                        secondaryErrorMessage.style.display = 'none';
+                        secondaryPhoneInput.value = `+${secondaryCountryCode}-${secondaryPhoneNumber}`;
+                    }
+
+                }
+
+
             });
         });
+
+
+
+
+
+
+
     </script>
- 
+
     <partial name="_ValidationScriptsPartial" />
 }
- 

@@ -9,6 +9,10 @@
   margin-top: auto;
 }
 
+.cont-form{
+  width: 100%;
+}
+
 .path-text {
    
     overflow-wrap: break-word;
