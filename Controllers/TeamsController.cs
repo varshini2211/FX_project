@@ -39,9 +39,10 @@ namespace DolphinFx.Controllers
     // Search logic: filter based on search term
     if (!string.IsNullOrEmpty(searchTerm))
     {
-        teams = teams.Where(t => t.TeamName.Contains(searchTerm) ||
-                                 t.TeamDescription.Contains(searchTerm) ||
-                                 t.Client.ClientName.Contains(searchTerm));
+        searchTerm = searchTerm.ToLower();
+        teams = teams.Where(t => t.TeamName.ToLower().Contains(searchTerm) ||
+                                 t.TeamDescription.ToLower().Contains(searchTerm) ||
+                                 t.Client.ClientName.ToLower().Contains(searchTerm));
     }
 
     int pageSize = 5;

@@ -25,9 +25,10 @@ namespace DolphinFx.Controllers
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                clients = clients.Where(c => c.ClientName.Contains(searchTerm) ||
-                                              c.PrimaryEmailID.Contains(searchTerm) ||
-                                              c.SecondaryEmailID.Contains(searchTerm));
+                searchTerm = searchTerm.ToLower();
+                clients = clients.Where(c => c.ClientName.ToLower().Contains(searchTerm) ||
+                                              c.PrimaryEmailID.ToLower().Contains(searchTerm) ||
+                                              c.SecondaryEmailID.ToLower().Contains(searchTerm));
             }
 
             int pageSize = 5;

@@ -41,9 +41,10 @@ namespace DolphinFx.Controllers
     // Check if the search term is provided
     if (!string.IsNullOrEmpty(searchTerm))
     {
-        applications = applications.Where(a => a.ApplicationName.Contains(searchTerm) ||
-                                               a.ApplicationDescription.Contains(searchTerm) ||
-                                               a.ApplicationName.Contains(searchTerm)); // Adjust according to your application fields
+        searchTerm = searchTerm.ToLower();
+        applications = applications.Where(a => a.ApplicationName.ToLower().Contains(searchTerm) ||
+                                               a.ApplicationDescription.ToLower().Contains(searchTerm) ||
+                                               a.ApplicationName.ToLower().Contains(searchTerm)); // Adjust according to your application fields
     }
 
     // Define pagination

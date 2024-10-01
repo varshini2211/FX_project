@@ -44,15 +44,16 @@ namespace DolphinFx.Controllers
     // Apply search filter if searchTerm is provided
     if (!string.IsNullOrEmpty(searchTerm))
     {
+        searchTerm = searchTerm.ToLower();
         applicationDetails = applicationDetails.Where(a =>
-            a.Applications.ApplicationName.Contains(searchTerm) ||  // Adjust this based on your actual properties
-            a.Client.ClientName.Contains(searchTerm) ||
-            a.UserRole.RoleDescription.Contains(searchTerm) ||
-              a.Environments.EnvironmentName.Contains(searchTerm) ||
-                a.Applications.ApplicationName.Contains(searchTerm) ||
-                 a.Link.Contains(searchTerm) ||
-                  a.User.Contains(searchTerm) ||
-                  a.Password.Contains(searchTerm) 
+            a.Applications.ApplicationName.ToLower().Contains(searchTerm) ||  // Adjust this based on your actual properties
+            a.Client.ClientName.ToLower().Contains(searchTerm) ||
+            a.UserRole.RoleDescription.ToLower().Contains(searchTerm) ||
+              a.Environments.EnvironmentName.ToLower().Contains(searchTerm) ||
+                a.Applications.ApplicationName.ToLower().Contains(searchTerm) ||
+                 a.Link.ToLower().Contains(searchTerm) ||
+                  a.User.ToLower().Contains(searchTerm) ||
+                  a.Password.ToLower().Contains(searchTerm) 
                   
                 
                  

@@ -41,8 +41,9 @@ private bool IsAjaxRequest(HttpRequest request)
     // Check if the search term is provided
     if (!string.IsNullOrEmpty(searchTerm))
     {
-        environments = environments.Where(e => e.EnvironmentName.Contains(searchTerm) || // Adjust based on your model properties
-                                                e.EnvironmentDescription.Contains(searchTerm)); // Add other fields as necessary
+        searchTerm = searchTerm.ToLower();
+        environments = environments.Where(e => e.EnvironmentName.ToLower().Contains(searchTerm) || // Adjust based on your model properties
+                                                e.EnvironmentDescription.ToLower().Contains(searchTerm)); // Add other fields as necessary
     }
 
     // Define pagination

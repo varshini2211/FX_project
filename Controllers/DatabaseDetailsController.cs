@@ -42,12 +42,13 @@ namespace DolphinFx.Controllers
     // Apply search filter if a search term is provided
     if (!string.IsNullOrEmpty(searchTerm))
     {
-        databaseDetails = databaseDetails.Where(d => d.Datasource.Contains(searchTerm) || // Replace SomeProperty with actual properties
-                                                     d.Username.Contains(searchTerm) ||
-                                                     d.Password.Contains(searchTerm) ||
-                                                     d.Client.ClientName.Contains(searchTerm) ||
-                                                     d.Application.ApplicationName.Contains(searchTerm) ||
-                                                     d.Environments.EnvironmentName.Contains(searchTerm)
+        searchTerm = searchTerm.ToLower();
+        databaseDetails = databaseDetails.Where(d => d.Datasource.ToLower().Contains(searchTerm) || // Replace SomeProperty with actual properties
+                                                     d.Username.ToLower().Contains(searchTerm) ||
+                                                     d.Password.ToLower().Contains(searchTerm) ||
+                                                     d.Client.ClientName.ToLower().Contains(searchTerm) ||
+                                                     d.Application.ApplicationName.ToLower().Contains(searchTerm) ||
+                                                     d.Environments.EnvironmentName.ToLower().Contains(searchTerm)
                         
                                                     
 
