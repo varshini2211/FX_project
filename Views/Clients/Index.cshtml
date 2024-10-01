@@ -147,8 +147,8 @@
                     url: '@Url.Action("Details", "Clients")/' + userId,
                     type: 'GET',
                     success: function (data) {
-                        $('#detailsModal .modal-body').html(data);
-                        $('#detailsModal').modal('show');
+                        $('#clientDetailsModal .modal-body').html(data);
+                        $('#clientDetailsModal').modal('show');
                     },
                     error: function () {
                         $('#detailsModal .modal-body').html('<p>Error loading details.</p>');
