@@ -74,6 +74,11 @@
     .team-row {
         cursor: pointer;
     }
+
+    .hidden {
+        display: none;
+    }
+
 </style>
 
 <h1>Teams</h1>
@@ -90,6 +95,30 @@
 <div id="teamTablePlaceholder">
     @await Html.PartialAsync("_TeamTablePartial", Model) <!-- Initial data load -->
 </div>
+<!-- Delete button, initially hidden -->
+<a id="deleteSelected" class="btn btn-danger hidden" onclick="deleteSelectedRows()" >Delete Selected</a>
+<!-- Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationLabel">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the selected items?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -98,13 +127,83 @@
 
     <script>
         $(document).ready(function () {
-            @if (TempData["InfoMessage"] != null)
-            {
-                <text>
-                            $('#infoModal').modal('show');
-                </text>
+
+             // Show/hide the delete button based on checkbox selection
+            $('.select-checkbox').on('change', function () {
+                toggleDeleteButton();
+            });
+
+            // Toggle the visibility of the delete button
+            function toggleDeleteButton() {
+                var selectedCount = $('.select-checkbox:checked').length;
+                if (selectedCount > 0) {
+                    $('#deleteSelected').removeClass('hidden');
+                } else {
+                    $('#deleteSelected').addClass('hidden');
+                }
             }
-        // Check for success message
+
+           
+           
+            // Select/Deselect all checkboxes
+            $('#selectAll').on('click', function () {
+                var checkboxes = $('.select-checkbox');
+                var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
+
+                checkboxes.prop('checked', !allChecked); // Toggle checkboxes
+                toggleDeleteButton(); // Update the visibility of the delete button
+            });
+
+
+            // Function to handle deletion after confirmation
+            $('#confirmDeleteButton').on('click', function () {
+                var selectedIds = [];
+                $('.select-checkbox:checked').each(function () {
+                    selectedIds.push($(this).data('id'));
+                });
+
+                // Perform the AJAX delete operation
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DeleteSelected", "Teams")',
+                    contentType: 'application/json',
+                    data: JSON.stringify(selectedIds),
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload(); // Reload the page to reflect changes
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error occurred: " + error);
+                        console.log(xhr, status, error);
+                    }
+                });
+
+                // Hide the confirmation modal after the deletion is initiated
+                $('#deleteConfirmationModal').modal('hide');
+            });
+
+            // Attach the delete function to the button
+            $('#deleteSelected').click(function () {
+                var selectedCount = $('.select-checkbox:checked').length;
+                if (selectedCount > 0) {
+                    // Show the confirmation modal
+                    $('#deleteConfirmationModal').modal('show');
+                } else {
+                    alert("Please select at least one team to delete.");
+                }
+            });
+
+        @if (TempData["InfoMessage"] != null)
+        {
+            <text>
+                        $('#infoModal').modal('show');
+            </text>
+        }
+
+                // Check for success message
                 var successMessage = '@TempData["SuccessMessage"]';
             if (successMessage) {
                 $("#successModal").modal("show");
@@ -121,18 +220,19 @@
                     }
                 });
             });
+
             $('.team-row').on('dblclick', function () {
                 var id = $(this).data('id');
                 loadTeamDetails(id);
             });
         });
+
         function loadTeamDetails(id) {
             $.ajax({
                 url: '@Url.Action("Details", "Teams")/' + id,
                 type: 'GET',
                 success: function (result) {
                     $('#teamDetailsBody').html(result);
-                    
                     $('#teamDetailsModal').modal('show');
                 },
                 error: function (xhr, status, error) {
@@ -142,4 +242,5 @@
             });
         }
     </script>
+
 }

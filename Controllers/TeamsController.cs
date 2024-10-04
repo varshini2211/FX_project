@@ -250,5 +250,35 @@ private bool IsAjaxRequest(HttpRequest request)
         {
             return _context.Teams.Any(e => e.TeamID == id);
         }
+
+        [HttpPost]
+        public IActionResult DeleteSelected([FromBody] List<int> selectedIds)
+        {
+            if (selectedIds == null || !selectedIds.Any())
+            {
+                return Json(new { success = false, message = "No teams selected." });
+            }
+
+            try
+            {
+                foreach (var teamId in selectedIds)
+                {
+                    var team = _context.Teams.Find(teamId);
+                    if (team != null)
+                    {
+                        _context.Teams.Remove(team);
+                    }
+                }
+
+                _context.SaveChanges();
+                TempData["SuccessMessage"] = "Team deleted successfully.";
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
     }
 }
